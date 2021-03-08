@@ -1,4 +1,5 @@
-import { login } from '../../utility'
+import { login } from '../../utility';
+import route from '../../router';
  const defaultState = {
   isLogIn: false,
   loadingLogIn: false,
@@ -34,11 +35,18 @@ export const actions = {
       try {
         const respone = await login("https://training-1.chondi.net/api/auth/login", data);
         console.log({respone, commit})
-        commit("logInSucces", respone)
-        this.$router.push({path: "/"})
+        if(respone.error){
+          commit("logInError")
+
+        }else{
+          commit("logInSucces", respone)
+          route.push({path: "/"})
+          
+        }
       } catch (error) {
         console.log(error)
         commit("logInError")
+       
       }
   
     }
@@ -67,6 +75,7 @@ export const mutations = {
   logInStart(){
       state.loadingLogIn = true
   },
+  
   handleLogIn(state, value){
     state.isLogIn = value
   },
@@ -82,6 +91,7 @@ export const mutations = {
   },
   handleShowModalLogIn(state, value){
     state.showModalLogIn = value
+    state.errorLogIn = null
   },
   defaultState(state){
       state = {...defaultState}

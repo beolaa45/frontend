@@ -7,6 +7,7 @@
           v-model="email"
           type="text"
           class="form-control"
+          v-bind:class="{error: errors.email}"
           id="email"
           placeholder="name@example.com"
         />
@@ -22,12 +23,13 @@
           class="form-control"
           id="password"
           placeholder="password"
+          v-bind:class="{error: errors.password}"
         />
         <div v-if="errors.password" class="alert alert-danger" role="alert">
           {{ errors.password }}
         </div>
       </div>
-      <div class="alert alert-primary" role="alert">
+      <div class="alert register alert-primary" role="alert">
         <router-link to="/register">Register</router-link>
       </div>
       <div v-if="errors.emailPassword" class="alert alert-danger" role="alert">
@@ -79,15 +81,11 @@ export default {
       } 
 
       if (Object.keys(this.errors).length < 1) {
-        //  this["auth/handleLogIn"](true)
         const data = {
           email: this.email,
           password: this.password
         }
         this.logIn(data)
-        // this.$store.commit("auth/handleLogIn", true);
-        // this.$store.commit("auth/handleShowModalLogIn", true);
-        // return this.$router.push("/");
       }
       e.preventDefault();
     },
@@ -109,11 +107,19 @@ export default {
   margin-left:  10px;
 }
 .alert {
-  text-align: right;
+  text-align: left;
   padding: 2px 20px;
   background-color: white;
   border: none;
   margin-top: 10px;
+  font-size: 13px;
+}
+.register{
+  text-align: right;
+}
+.error{
+  border: 1px solid red;
+  
 }
 
 </style>
