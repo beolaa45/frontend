@@ -67,15 +67,7 @@ export default {
         this.errors = { ...this.errors, email: "Email required." };
       } else if (!this.validEmail(this.email)) {
         this.errors = { ...this.errors, email: "Valid email required." };
-      } else if (
-        this.email !== "admin@gmail.com" &&
-        this.password === "123456"
-      ) {
-        this.errors = {
-          ...this.errors,
-          emailPassword: "Email or Password not exits!",
-        };
-      }
+      } 
       //password
       if (!this.password) {
         this.errors = { ...this.errors, password: "Password required." };
@@ -84,12 +76,7 @@ export default {
           ...this.errors,
           password: "password must be at least 6 characters ",
         };
-      } else if (this.password !== "123456") {
-        this.errors = {
-          ...this.errors,
-          emailPassword: "Email or Password not exits!",
-        };
-      }
+      } 
 
       if (Object.keys(this.errors).length < 1) {
         //  this["auth/handleLogIn"](true)
