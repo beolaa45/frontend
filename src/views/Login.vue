@@ -73,10 +73,10 @@ export default {
       //password
       if (!this.password) {
         this.errors = { ...this.errors, password: "Password required." };
-      } else if (this.password.length < 6) {
+      } else if (this.password.length < 8) {
         this.errors = {
           ...this.errors,
-          password: "password must be at least 6 characters ",
+          password: "password must be at least 8 characters ",
         };
       } 
 
@@ -85,6 +85,7 @@ export default {
           email: this.email,
           password: this.password
         }
+        console.log("ok", this.logIn)
         this.logIn(data)
       }
       e.preventDefault();
@@ -113,6 +114,7 @@ export default {
   border: none;
   margin-top: 10px;
   font-size: 13px;
+  padding: 0;
 }
 .register{
   text-align: right;

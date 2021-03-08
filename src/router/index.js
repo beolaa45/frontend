@@ -20,7 +20,7 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/Login.vue'),
-    // meta: {requiresLogin: true}
+
   },
   {
     path: '/register',
@@ -29,7 +29,7 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/Register.vue'),
-    // meta: {requiresLogin: true}
+
   },
   {
     path: '**',
@@ -51,9 +51,11 @@ const routes = [
 ]
 
 const router = new VueRouter({
+  mode:'history',
   routes
 })
 router.beforeEach((to, from, next) => {
+  
   if (to.meta.requiresLogin) {
       // You can use store variable here to access globalError or commit mutation 
      console.log("store", store.state.auth.isLogIn)
@@ -62,7 +64,6 @@ router.beforeEach((to, from, next) => {
      }else{
        next()
      }
-      
   } else {
       next()
   }
