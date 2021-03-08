@@ -12,10 +12,6 @@
       </ul>
     </div>
 
-    <!-- <button type="button" class="btn btn-primary" @click="Toasty" id="liveToastBtn">
-      Show live toast
-    </button> -->
-
     <div
       v-if="showModalLogIn"
       class="align-items-center text-white border-0"
@@ -37,11 +33,13 @@
 
     <div
       v-if="showModalRegister"
-      class="align-items-center text-white bg-warning border-0"
+      class="align-items-center text-white  border-0"
       id="toastRegister"
+      :class="{'bg-primary': user.successRegister, 'bg-warning': user.errorRegister }"
     >
       <div class="d-flex">
-        <div v-if="showModalRegister" class="toast-body">Register Success.</div>
+        <div v-if="user.successRegister" class="toast-body">Register Success.</div>
+        <div v-if="user.errorRegister" class="toast-body">Register Fail.</div>
         <button
           type="button"
           class="btn-close btn-close-white me-2 m-auto"
@@ -56,9 +54,10 @@
   </div>
 </template>
 <script>
-// import Modal from "./components/Modal"
+
 import { mapGetters } from "vuex";
 import { mapMutations } from "vuex";
+
 export default {
   name: "App",
   data() {
@@ -90,6 +89,7 @@ export default {
     },
    
     handleModalRegister() {
+     
       this.$store.commit("auth/handleShowModalRegister", false);
     },
   },

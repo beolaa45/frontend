@@ -1,6 +1,6 @@
 <template>
   <div id="register">
-    <form @submit="checkForm">
+    <form >
       <div class="mb-3">
         <label for="fullName" class="form-label">Full Name*</label>
         <input
@@ -65,12 +65,17 @@
       <div class="alert login alert-primary" role="alert">
         <router-link to="/login">Login</router-link>
       </div>
-      <button type="submit" class="btn btn-primary">Register</button>
+      <button type="button" @click="checkForm" class="btn btn-primary">Register
+
+        <div v-if="user.loadingRegister" class="spinner-border spinner-border-sm" size="1x" role="status">
+          <span class="sr-only"></span>
+        </div>
+      </button>
     </form>
   </div>
 </template>
 <script>
-import { mapMutations } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 export default {
   name: "Register",
   data() {
@@ -80,13 +85,15 @@ export default {
       password: null,
       comfirmPassword: null,
       fullName: null,
+ 
     };
   },
   computed: {
-    ...mapMutations(["auth/registerSucces"]),
+     ...mapGetters('auth', ["user"])
   },
   methods: {
-    checkForm(e) {
+    ...mapActions("auth", ['register']),
+    async checkForm(e) {
       this.errors = {};
       /// full name
       if (!this.fullName) {
@@ -101,10 +108,10 @@ export default {
       //password
       if (!this.password) {
         this.errors = { ...this.errors, password: "Password required." };
-      } else if (this.password.length < 6) {
+      } else if (this.password.length < 8) {
         this.errors = {
           ...this.errors,
-          password: "password must be at least 6 characters ",
+          password: "password must be at least 8 characters ",
         };
       } else {
         //comfirm password
@@ -116,14 +123,16 @@ export default {
         }
       }
       if (Object.keys(this.errors).length < 1) {
-        console.log(
-          "succes",
-          this.$store.commit("auth/handleShowModalRegister", true)
-        );
-        return this.$router.push("login");
+        let data = {
+          fullName: this.fullName,
+          email: this.email,
+          password: this.password,
+          confirmPassword: this.comfirmPassword,
+          
+        }
+        await this.register(data);
+        e.preventDefault();
       }
-
-      console.log("ok", e, this.email, this.password, this.comfirmPassword);
       e.preventDefault();
     },
     toastToggle(value) {
@@ -153,6 +162,7 @@ export default {
   background-color: white;
   border: none;
   font-size: 13px;
+  padding: 0;
 }
 .error{
   border: 1px solid red;
@@ -160,5 +170,8 @@ export default {
 .login{
   text-align: right;
   font-size: 16px;
+}
+.spinner-border{
+  margin-left: 10px;
 }
 </style>
