@@ -12,3 +12,4 @@ export async function login(url = '', data = {}) {
     });
     return response.json(); // parses JSON response into native JavaScript objects
   }
+

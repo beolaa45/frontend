@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <div v-if="isLogIn" id="nav">
+    {{user.islogIn}}
+    <div v-if="user.isLogIn" id="nav">
       <ul class="nav nav-tabs">
         <li class="nav-item">
           <router-link exact to="/">Home</router-link>
@@ -18,11 +19,11 @@
     <div
       v-if="showModalLogIn"
       class="align-items-center text-white border-0"
-      v-bind:class="{ 'bg-primary': user.islogIn, 'bg-warning': user.errorLogIn }"
+      v-bind:class="{ 'bg-primary': user.auth, 'bg-warning': user.errorLogIn }"
       id="toast"
     >
       <div class="d-flex">
-        <div v-if="user.islogIn" class="toast-body">Login Success.</div>
+        <div v-if="user.auth" class="toast-body">Login Success.</div>
         <div v-if="user.errorLogIn" class="toast-body">Login fail.</div>
         <button
           type="button"
@@ -85,8 +86,6 @@ export default {
       this.$router.push("login");
     },
     handleModalLogIn() {
-      // this.$store.commit("handleShowModalLogIn", false)
-      // this.toastToggle("none")
       this.handleShowModalLogIn(false);
     },
    
