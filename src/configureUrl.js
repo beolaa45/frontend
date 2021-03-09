@@ -1,0 +1,1 @@
+export const ENTRY_URL = "https://training-1.chondi.net/api"

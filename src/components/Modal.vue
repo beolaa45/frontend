@@ -1,31 +1,34 @@
 <template>
-      <div v-if="showModalLogIn" class="align-items-center text-white bg-primary border-0" id="toast">
-      <div class="d-flex">
-        <div v-if="showModalLogIn" class="toast-body">Login Success.</div>
-        <div v-if="registerSucces" class="toast-body">Register Success.</div>
-        <button
-          type="button"
-          class="btn-close btn-close-white me-2 m-auto"
-          data-bs-dismiss="toast"
-          aria-label="Close"
-          @click="handleModalLogIn"
-        ></button>
-      </div>
-    </div>
+  <div class="modal-spinner">
+     <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden"></span>
+  </div>
+  </div>
+ 
 </template>
 
 <script>
 export default {
-    name: "Modal",
-    props: ["ishow", "children", "onClickName"],
-    methods:{
-        handleModalLogIn(){
-            $this.$emit(`${this.onClickName}`, false)
-        }
-    }
-}
+  name: "Modal",
+  props: [],
+  methods: {
+    handleModalLogIn() {},
+  },
+};
 </script>
 
 <style scoped>
+.modal-spinner{
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  background-color: rgba(46, 46, 46, 0.459);
+}
 </style>
