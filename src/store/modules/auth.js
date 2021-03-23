@@ -109,7 +109,7 @@ export const actions = {
         console.log("erro usth", respone)
         console.log("loignerror", respone)
         commit("logInError", respone)
-        commit("handleLogout")
+        // commit("handleLogout")
         await setTimeout(() => {
           commit("handleShowModalLogIn", false)
         }, 3000)
@@ -126,7 +126,7 @@ export const actions = {
       }
     } catch (error) {
       commit("logInError", error)
-      commit("handleLogout")
+      // commit("handleLogout")
       await setTimeout(() => {
 
         commit("handleShowModalLogIn", false)
