@@ -1,74 +1,114 @@
 <template>
   <div id="app">
-    {{user.islogIn}}
-    <div v-if="user.isLogIn" id="nav">
-      <ul class="nav nav-tabs">
-        <li class="nav-item">
-          <router-link exact to="/">Home</router-link>
-        </li>
-        <li class="nav-item">
-          <a href="#" @click="handleLogout">Logout</a>
-        </li>
-      </ul>
-    </div>
+    <Modal v-if="this.sateVote.loading" />
+    <Modal v-if="this.sateVote.loadingDelete" />
+    <Modal v-if="this.sateVote.loadingEdit" />
+    <Modal v-if="this.sateVote.loadingAddOptions" />
+    <Modal v-if="this.user.loadingLogIn" />
+    <Modal v-if="this.user.loadingRegister" />
+    <Modal v-if="this.user.loadingChangePassword" />
 
-    <div
-      v-if="showModalLogIn"
-      class="align-items-center text-white border-0"
-      v-bind:class="{ 'bg-primary': user.auth, 'bg-warning': user.errorLogIn }"
-      id="toast"
+    <nav
+      v-if="user.auth && user.auth.access_token"
+      class="navbar navbar-expand-lg navbar-light bg-light"
     >
-      <div class="d-flex">
-        <div v-if="user.auth" class="toast-body">Login Success.</div>
-        <div v-if="user.errorLogIn" class="toast-body">Login fail.</div>
+      <div class="container-fluid">
         <button
+          class="navbar-toggler"
           type="button"
-          class="btn-close btn-close-white me-2 m-auto"
-          data-bs-dismiss="toast"
-          aria-label="Close"
-          @click="handleModalLogIn"
-        ></button>
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <font-awesome-icon :icon="['fas', 'bars']" color="black" />
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <router-link class="nav-link" exact to="/">Home</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link" to="/list-vote-other-user"
+                >Users</router-link
+              >
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link" to="/change-password"
+                >Change Password</router-link
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" @click="handleLogout">Logout</a>
+            </li>
+          </ul>
+        </div>
       </div>
-    </div>
+    </nav>
 
-    <div
-      v-if="showModalRegister"
-      class="align-items-center text-white  border-0"
-      id="toastRegister"
-      :class="{'bg-primary': user.successRegister, 'bg-warning': user.errorRegister }"
-    >
-      <div class="d-flex">
-        <div v-if="user.successRegister" class="toast-body">Register Success.</div>
-        <div v-if="user.errorRegister" class="toast-body">Register Fail.</div>
-        <button
-          type="button"
-          class="btn-close btn-close-white me-2 m-auto"
-          data-bs-dismiss="toast"
-          aria-label="Close"
-          @click="handleModalRegister"
-        ></button>
-      </div>
-    </div>
-
-    <router-view />
+    <ModalNotify
+      v-on:event="handleModalLogIn"
+      :show="this.user.showModalLogIn"
+      :success="this.user.auth"
+      :error="this.user.errorLogIn"
+    />
+    <ModalNotify
+      v-on:event="handleModalRegister"
+      :show="this.user.showModalRegister"
+      :success="this.user.successRegister"
+      :error="this.user.errorRegister"
+    />
+    <ModalNotify
+      v-on:event="hiddenModalVote"
+      :show="this.sateVote.showModalVote"
+      :success="true"
+      :error="this.sateVote.error"
+    />
+    <ModalNotify
+      v-on:event="hiddenModalDelete"
+      :show="this.sateVote.showModalDelete"
+      :success="this.sateVote.successDeleted"
+      :error="this.sateVote.errorDelete"
+    />
+    <ModalNotify
+      v-on:event="hiddenModalEdit"
+      :show="this.sateVote.showModalEdit"
+      :success="this.sateVote.successEdited"
+      :error="this.sateVote.errorEdit"
+    />
+    <ModalNotify
+      v-on:event="hiddenModalAddOptions"
+      :show="this.sateVote.showModalAddOptions"
+      :success="this.sateVote.successAddOptions"
+      :error="this.sateVote.errorAddOptions"
+    />
+    <ModalNotify
+      v-on:event="hiddenModalChangePassword"
+      :show="this.user.showModalChangePassword"
+      :success="this.user.successChangePassword"
+      :error="this.user.errorChangePassword"
+    />
+    <router-view></router-view>
   </div>
 </template>
 <script>
-
-import { mapGetters } from "vuex";
-import { mapMutations } from "vuex";
-
+import { mapGetters, mapMutations } from "vuex";
+import Modal from "./components/Modal";
+import ModalNotify from "./components/ModalNotify";
 export default {
   name: "App",
   data() {
     return {
       primary: true,
-      warning: false
+      warning: false,
     };
   },
-  watch: {
-
+  components: {
+    Modal,
+    ModalNotify,
   },
+  watch: {},
   computed: {
     ...mapGetters("auth", [
       "isLogIn",
@@ -76,35 +116,67 @@ export default {
       "showModalRegister",
       "user",
     ]),
+    ...mapGetters("vote", ["sateVote"]),
   },
   methods: {
-    ...mapMutations("auth", ["handleShowModalLogIn", "defaultState"]),
+    ...mapMutations("auth", [
+      "handleShowModalLogIn",
+      "defaultState",
+      "handleShowModalChangePassword",
+    ]),
+    ...mapMutations("vote", [
+      "showModalVotes",
+      "showModalDelete",
+      "showModalEdit",
+      "handleShowModalAddOptions",
+    ]),
     handleLogout() {
-      console.log("logout");
+      // this.$router.push("/change-password")
       this.$store.commit("auth/handleLogout", null);
-      this.$router.push("login");
+
+      location.reload();
     },
     handleModalLogIn() {
       this.handleShowModalLogIn(false);
     },
-   
+
     handleModalRegister() {
-     
       this.$store.commit("auth/handleShowModalRegister", false);
     },
+    hiddenModalVote() {
+      this.showModalVotes(false);
+    },
+    hiddenModalDelete() {
+      this.showModalDelete(false);
+    },
+    hiddenModalEdit() {
+      this.showModalEdit(false);
+    },
+    hiddenModalAddOptions() {
+      this.handleShowModalAddOptions(false);
+    },
+    hiddenModalChangePassword() {
+      this.handleShowModalChangePassword(false);
+    },
   },
+  mounted() {},
 };
 </script>
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
 
-  max-width: 500px;
+  max-width: 800px;
   margin: 0 auto;
+  padding-bottom: 100px;
+  padding: 10px;
+}
+.router-link-active {
+  color: #000 !important;
 }
 #toast,
 #toastRegister {
@@ -113,26 +185,26 @@ export default {
   top: 0;
   left: 50%;
   transform: translate(-50%);
+  width: 200px;
 }
 .nav {
-  justify-content: space-between;
+  justify-content: flex-end;
 }
-#nav {
-  padding: 30px;
+.nav > * {
+  margin-right: 10px;
+  padding: 5px;
 }
-.btn{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0 auto;
+.btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
 }
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
+.nav-link {
+  text-align: left;
+  padding-left: 10px;
 }
-
-#nav a.router-link-exact-active {
-  color: #42b983;
+.navbar{
+  margin-bottom: 30px;
 }
 </style>

@@ -1,16 +1,3 @@
-// import Vue from 'vue'
-// import Vuex from 'vuex'
-// import auth from './modules/auth'
-// Vue.use(Vuex)
-
-// const store = new Vuex.Store({
-//   modules: {
-//     auth
-//   }
-// })
-// console.log("ok",store.state.auth.isLogIn)
-// export default store
-
 
 
 import Vue from "vue";
@@ -28,7 +15,6 @@ const modules = requireContext
     if (module.namespaced === undefined) {
       module.namespaced = true;
     }
-
     return { ...modules, [name]: module };
   }, {});
 

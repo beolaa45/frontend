@@ -7,7 +7,7 @@
           v-model="email"
           type="text"
           class="form-control"
-          v-bind:class="{error: errors.email}"
+          v-bind:class="{ error: errors.email }"
           id="email"
           placeholder="name@example.com"
         />
@@ -23,7 +23,7 @@
           class="form-control"
           id="password"
           placeholder="password"
-          v-bind:class="{error: errors.password}"
+          v-bind:class="{ error: errors.password }"
         />
         <div v-if="errors.password" class="alert alert-danger" role="alert">
           {{ errors.password }}
@@ -36,32 +36,52 @@
         {{ errors.emailPassword }}
       </div>
 
-      <button type="submit" class="btn btn-primary ">
-        <span >Login</span>
-        <div v-if="user.loadingLogIn" class="spinner-border spinner-border-sm" size="1x" role="status">
+      <button type="submit" class="btn btn-primary login">
+        <span>Login</span>
+        <div
+          v-if="user.loadingLogIn"
+          class="spinner-border spinner-border-sm"
+          size="1x"
+          role="status"
+        >
           <span class="sr-only"></span>
         </div>
       </button>
+      <div class="login-facebook">
+        <BaseButton :type="'button'" :styleButton="true" v-on:myEvent="handleLoginFacebook"
+          > Login Facebook
+        </BaseButton>
+      </div>
     </form>
   </div>
 </template>
 <script>
 import { mapMutations, mapActions, mapGetters } from "vuex";
-
+import BaseButton from "../components/BaseButton";
 export default {
   data() {
     return {
       errors: {},
       email: null,
       password: null,
+      urlLoginFacebook: "",
     };
   },
+  components: {
+    BaseButton,
+  },
+  watch: {
+    getUrlLoginFacebook: function () {
+      console.log("wtahc, face");
+      this.urlLoginFacebook = this.getUrlLoginFacebook.data.url;
+    },
+  },
   computed: {
-    ...mapGetters("auth", ["user"])
+    ...mapGetters("auth", ["user", "getUrlLoginFacebook"]),
   },
   methods: {
-    ...mapMutations("auth", ["handleLogIn"]),
-    ...mapActions("auth", ["logIn"]),
+    ...mapMutations("auth", ["handleLogIn", "clearLoginFacebook"]),
+    ...mapActions("auth", ["logIn", "getPathLoginFacebook"]),
     checkForm(e) {
       this.errors = {};
       ///email
@@ -69,7 +89,7 @@ export default {
         this.errors = { ...this.errors, email: "Email required." };
       } else if (!this.validEmail(this.email)) {
         this.errors = { ...this.errors, email: "Valid email required." };
-      } 
+      }
       //password
       if (!this.password) {
         this.errors = { ...this.errors, password: "Password required." };
@@ -78,15 +98,14 @@ export default {
           ...this.errors,
           password: "password must be at least 8 characters ",
         };
-      } 
+      }
 
       if (Object.keys(this.errors).length < 1) {
         const data = {
           email: this.email,
-          password: this.password
-        }
-        console.log("ok", this.logIn)
-        this.logIn(data)
+          password: this.password,
+        };
+        this.logIn(data);
       }
       e.preventDefault();
     },
@@ -94,18 +113,37 @@ export default {
       var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       return re.test(email);
     },
+    handleLoginFacebook() {
+      console.log("ok");
+      if (this.urlLoginFacebook) {
+        window.open(this.urlLoginFacebook);
+      }
+    },
+  },
+  mounted() {
+    this.getPathLoginFacebook();
+  },
+  destroyed() {
+    this.clearLoginFacebook();
   },
 };
 </script>
 <style scoped>
 #login {
   margin-top: 100px;
+  max-width: 700px;
+}
+.login {
+  width: 200px;
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 5px;
 }
 .mb-3 {
   text-align: left;
 }
-.spinner-border{
-  margin-left:  10px;
+.spinner-border {
+  margin-left: 10px;
 }
 .alert {
   text-align: left;
@@ -116,12 +154,16 @@ export default {
   font-size: 13px;
   padding: 0;
 }
-.register{
+.register {
   text-align: right;
 }
-.error{
+.error {
   border: 1px solid red;
-  
 }
 
+.login-facebook {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
 </style>

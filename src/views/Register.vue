@@ -65,7 +65,7 @@
       <div class="alert login alert-primary" role="alert">
         <router-link to="/login">Login</router-link>
       </div>
-      <button type="button" @click="checkForm" class="btn btn-primary">Register
+      <button type="button" @click="checkForm" class="btn btn-primary register">Register
 
         <div v-if="user.loadingRegister" class="spinner-border spinner-border-sm" size="1x" role="status">
           <span class="sr-only"></span>
@@ -173,5 +173,12 @@ export default {
 }
 .spinner-border{
   margin-left: 10px;
+}
+.register {
+  width: 200px;
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 2px;
+
 }
 </style>
