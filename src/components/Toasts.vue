@@ -19,11 +19,11 @@
 </template>
 
 <script>
-var option = {
-    animation: true,
-    delay: 5000,
-    autohide: true
-}
+// var option = {
+//     animation: true,
+//     delay: 5000,
+//     autohide: true
+// }
 
 var myToastEl = document.getElementById('myToast')
 myToastEl.addEventListener('hidden.bs.toast', function () {
